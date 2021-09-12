@@ -1,7 +1,11 @@
 package decoder
 
 import (
+	"bytes"
+	"compress/flate"
+	"encoding/base64"
 	"fmt"
+	"io"
 	"strconv"
 	"strings"
 )
@@ -32,4 +36,16 @@ func EnsurePadding(in string) string {
 		in += "="
 	}
 	return in
+}
+
+func DecodeData(in string) ([]byte, error) {
+	dataBytes, err := base64.URLEncoding.DecodeString(EnsurePadding(in))
+
+	if err == nil {
+		reader := flate.NewReader(bytes.NewReader(dataBytes))
+		bodyBytes, err := io.ReadAll(reader)
+		return bodyBytes, err
+	}
+
+	return nil, err
 }

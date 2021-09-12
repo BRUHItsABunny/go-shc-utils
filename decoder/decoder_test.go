@@ -1,11 +1,8 @@
 package decoder
 
 import (
-	"bytes"
-	"compress/flate"
 	"encoding/base64"
 	"fmt"
-	"io"
 	"strings"
 	"testing"
 )
@@ -23,18 +20,6 @@ func TestToOriginalString(t *testing.T) {
 	}
 	fmt.Println(string(headerBytes))
 	fmt.Println(len(jwt))
-	dataBytes, err := base64.URLEncoding.DecodeString(EnsurePadding(jwt[1]))
-	fmt.Println(string(dataBytes))
-	if err != nil {
-		t.Error(err)
-	}
-	reader := flate.NewReader(bytes.NewReader(dataBytes))
-	if err != nil {
-		t.Error(err)
-	}
-	bodyBytes, err := io.ReadAll(reader)
-	if err != nil {
-		t.Error(err)
-	}
+	bodyBytes, err := DecodeData(jwt[1])
 	fmt.Println(string(bodyBytes))
 }
