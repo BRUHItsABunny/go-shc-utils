@@ -23,16 +23,16 @@ func TestToOriginalString(t *testing.T) {
 	}
 	fmt.Println(string(headerBytes))
 	fmt.Println(len(jwt))
-	comp := append([]byte{}, []byte(jwt[1])...)
-	reader := flate.NewReader(bytes.NewReader(comp))
+	dataBytes, err := base64.URLEncoding.DecodeString(EnsurePadding(jwt[1]))
+	fmt.Println(string(dataBytes))
+	if err != nil {
+		t.Error(err)
+	}
+	reader := flate.NewReader(bytes.NewReader(dataBytes))
 	if err != nil {
 		t.Error(err)
 	}
 	bodyBytes, err := io.ReadAll(reader)
-	if err != nil {
-		t.Error(err)
-	}
-	_, err = base64.URLEncoding.Decode(bodyBytes, bodyBytes)
 	if err != nil {
 		t.Error(err)
 	}
